@@ -1,4 +1,4 @@
-module privyid
+module e-wallet
 
 go 1.12
 

@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"privyid/config"
-	"privyid/service/delivery"
+	"e-wallet/config"
+	"e-wallet/service/delivery"
 
 	_ "github.com/go-sql-driver/mysql"
 )

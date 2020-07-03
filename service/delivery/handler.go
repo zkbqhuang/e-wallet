@@ -1,8 +1,10 @@
 package delivery
 
 import (
+	"e-wallet/service/repository"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/securecookie"
 )
@@ -104,4 +106,29 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 func logoutHandler(response http.ResponseWriter, request *http.Request) {
 	clearSession(response)
 	http.Redirect(response, request, "/", 302)
+}
+
+// top-up handler
+func topupHandler(response http.ResponseWriter, request *http.Request) {
+	usernamex := getUserName(request)
+
+	username := request.FormValue("username")
+	balance := request.FormValue("jumlah")
+	var status string
+
+	if usernamex != "" {
+		jumlah, _ := strconv.Atoi(balance)
+		err := repository.TopupBalanceRepository(username, jumlah)
+		if err != nil {
+			println("Error while exec")
+			println(err.Error())
+			status = "Failed"
+		} else {
+			status = "Success"
+		}
+	} else {
+		status = "Before we go, please login first"
+	}
+
+	fmt.Fprintf(response, status)
 }
