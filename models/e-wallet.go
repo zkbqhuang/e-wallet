@@ -12,4 +12,10 @@ type (
 		UserID  int `json:"user_id"`
 		Balance int `json:"balance"`
 	}
+
+	// GetUserData declare
+	GetUserData struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
 )

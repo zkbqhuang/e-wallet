@@ -223,3 +223,22 @@ func TransferBalanceRepository(username, tujuan string, jumlah int) (err error) 
 
 	return err
 }
+
+// GetUser function
+func GetUserData(username string) (data models.GetUserData, err error) {
+	db, err := config.Connect()
+	if err != nil {
+		fmt.Println(err.Error())
+		return data, err
+	}
+	defer db.Close()
+
+	// deklarasi query dengan menggunakan "dbPrepare", bertujuan agar query ini bisa dipakai berulang kali (re-usable)
+	stmtGetUserData, err := db.Prepare("select username, password from users where username = ?")
+	if err != nil {
+		println(err.Error())
+		return data, err
+	}
+	stmtGetUserData.QueryRow(username).Scan(&data.Username, &data.Password)
+	return data, err
+}
