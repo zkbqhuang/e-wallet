@@ -1,13 +1,3 @@
-# E-wallet (privyID)
-Build CRUD system for make mini e-wallet, user can login, logout, top-up, transfer
-
-## Preparation
-* Ensure the **GOROOT** & **GOPATH** are set properly
-* Ensure clone this repo **OUTSIDE** of **GOPATH**
-* Create new database scheme in mysql with 'e-wallet' as a database name
-* To create table, import this sql to 'e-wallet' databases
-
-```bash
 -- phpMyAdmin SQL Dump
 -- version 4.9.2
 -- https://www.phpmyadmin.net/
@@ -142,20 +132,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-```
-
-## Usage or Run
-* Ensure your mysql engine was run properly
-* To run this project, just run the **main.go**, then this program will automatically download the required package
-
-```bash
-$ go run main.go
-```
-
-##  About
-This project use framework made by me (from scratch) and use external package like :
-* [go-mux](github.com/gorilla/mux) and [net/http](https://golang.org/pkg/net/http/) for router and RESTAPI
-* [gorilla/securecookie](github.com/gorilla/securecookie) for make cookie and sesion for login and logout feature
-* [strconv](https://golang.org/pkg/strconv/)
-* [database/sql](https://golang.org/pkg/database/sql/) and [github.com/go-sql-driver/mysql](github.com/go-sql-driver/mysql) for connection to database and use **mysql** dialeq or driver

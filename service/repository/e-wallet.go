@@ -166,7 +166,7 @@ func TransferBalanceRepository(username, tujuan string, jumlah int) (err error) 
 				// perintah untuk menghitung balance setelah menerima transfer, maka rumusnya "saldo sebelumnya + jumlah transfer"
 				balanceAfter := getBalanceTujuan.Balance + jumlah
 				// melakukan pencatatan table "user_balance_history" untuk dicatat aktivitas transaksinya
-				_, err = stmtRecordBalanceHistory.Exec(insertID, getBalanceTujuan.Balance, balanceAfter, jumlah, "transfer in", "Yogyakarta", username, username, "debit", now)
+				_, err = stmtRecordBalanceHistory.Exec(insertID, getBalanceTujuan.Balance, balanceAfter, jumlah, "transfer in", "Yogyakarta", username, tujuan, "debit", now)
 				if err != nil {
 					println("Error record history")
 					println(err.Error())
@@ -184,7 +184,7 @@ func TransferBalanceRepository(username, tujuan string, jumlah int) (err error) 
 
 				// perintah ini digunakan untuk mencatat transaksi pada table "user_balance_history" dimana pada proses sebelumnya telah melakukan update balance di table "user_balance"
 				balanceAfter := getBalanceTujuan.Balance + jumlah
-				_, err = stmtRecordBalanceHistory.Exec(getBalanceTujuan.ID, getBalanceTujuan.Balance, balanceAfter, jumlah, "transfer in", "Yogyakarta", username, username, "debit", now)
+				_, err = stmtRecordBalanceHistory.Exec(getBalanceTujuan.ID, getBalanceTujuan.Balance, balanceAfter, jumlah, "transfer in", "Yogyakarta", username, tujuan, "debit", now)
 
 				if err != nil {
 					println("Error record history")
@@ -196,7 +196,7 @@ func TransferBalanceRepository(username, tujuan string, jumlah int) (err error) 
 			// karena pengirim melakukan pengiriman saldo maka balancenya akan dikurangi dengan nominal yang dikirimkan, sehingga menghasilkan nilai yang disimpan pada "balanceAfterTransfer" seperti pada code dibawah
 			balanceAfterTransfer := getBalanceMe.Balance - jumlah
 			// melakukan eksekusi query untuk mencatat transaksi, transaksi dalam scope ini adalah pengirim mengirimkan saldo kepada penerima, dengan properti seperti yang tertera dibawah
-			_, err = stmtRecordBalanceHistory.Exec(getBalanceMe.ID, getBalanceMe.Balance, balanceAfterTransfer, jumlah, "transfer out", "Yogyakarta", username, username, "credit", now)
+			_, err = stmtRecordBalanceHistory.Exec(getBalanceMe.ID, getBalanceMe.Balance, balanceAfterTransfer, jumlah, "transfer out", "Yogyakarta", username, tujuan, "credit", now)
 
 			if err != nil {
 				println("Error record history")
