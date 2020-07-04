@@ -6,6 +6,7 @@ Build CRUD system for make mini e-wallet, user can login, logout, top-up, transf
 * Ensure clone this repo **OUTSIDE** of **GOPATH**
 * Create new database scheme in mysql with 'e-wallet' as a database name
 * To create table, import this sql to 'e-wallet' databases
+* Or if want file.sql raw I attach
 
 ```bash
 -- phpMyAdmin SQL Dump
