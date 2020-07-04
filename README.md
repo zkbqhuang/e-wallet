@@ -154,9 +154,13 @@ COMMIT;
 $ go run main.go
 ```
 
-##  About
+##  About & Package Use
 This project use framework made by me (from scratch) and use external package like :
-* [go-mux](github.com/gorilla/mux) and [net/http](https://golang.org/pkg/net/http/) for router and RESTAPI
-* [gorilla/securecookie](github.com/gorilla/securecookie) for make cookie and sesion for login and logout feature
+* [github.com/go-sql-driver/mysql](github.com/go-sql-driver/mysql)
+* [github.com/gorilla/mux](github.com/gorilla/mux)
+* [github.com/gorilla/securecookie](github.com/gorilla/securecookie)
+* [github.com/kataras/go-sessions](github.com/kataras/go-sessions)
+* [github.com/satori/go.uuid](github.com/satori/go.uuid)
+* [github.com/valyala/fasthttp](github.com/valyala/fasthttp)
+* [golang.org/x/crypto](golang.org/x/crypto)
 * [strconv](https://golang.org/pkg/strconv/)
-* [database/sql](https://golang.org/pkg/database/sql/) and [github.com/go-sql-driver/mysql](github.com/go-sql-driver/mysql) for connection to database and use **mysql** dialeq or driver
