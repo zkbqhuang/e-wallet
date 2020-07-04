@@ -37,19 +37,28 @@ const (
 
 // cookie handling
 var cookieHandler = securecookie.New(
+	// perintah untuk membuat key secara random
 	securecookie.GenerateRandomKey(64),
 	securecookie.GenerateRandomKey(32))
 
+// perintah untuk handling atau fungsi pengecekan after login
+// setelah login pasti data username akan tersimpan di cookie
+// jika fungsi ini dipanggil tidak mengembailkan dara username maka user blm berhasil login
 func getUserName(request *http.Request) (userName string) {
 	if cookie, err := request.Cookie("session"); err == nil {
+		// deklarasi map untuk menampung value dari cookie yang akan disimpan
+		// deklarasi ini berbentuk map dengan key bertipe string dan value nya bertipe string
 		cookieValue := make(map[string]string)
 		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
 			userName = cookieValue["username"]
 		}
 	}
+	// nilai balikan pada saat fungsi ini dipanggil
+	// value yang dibalikan adalah data username yang bertipe string
 	return userName
 }
 
+// deklarasi handling untuk meng-set sesion pada saat login
 func setSession(userName string, response http.ResponseWriter) {
 	value := map[string]string{
 		"username": userName,
@@ -64,6 +73,7 @@ func setSession(userName string, response http.ResponseWriter) {
 	}
 }
 
+// handling untuk menghandle logout, dimana proses nya adalah menghapus sesion yang tersimpan dengan data login tersebut
 func clearSession(response http.ResponseWriter) {
 	cookie := &http.Cookie{
 		Name:   "session",
@@ -95,7 +105,8 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 	pass := request.FormValue("password")
 	redirectTarget := "/"
 	if username != "" && pass != "" {
-		// .. check credentials ..
+		// perintah untuk melakukan pengecekan credential
+		// jika credential nya benar maka akan diarahkan ke alamat "/internal"
 		setSession(username, response)
 		redirectTarget = "/internal"
 	}
@@ -108,16 +119,23 @@ func logoutHandler(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, "/", 302)
 }
 
-// top-up handler
+// top-up handler untuk menghandle route "/top-up"
 func topupHandler(response http.ResponseWriter, request *http.Request) {
+	// perintah untuk melakukan pengecekan credential
+	// jika fungsi ini dipanggil dan mengembalikan value yang tidak sama atau kosong maka variable ini akan dijadikan parameter pengecekan
+	// jika data variable "usernamex" kosong atau tidak sesuai maka tidak dapat melakukan action utama yaitu action top-up
 	usernamex := getUserName(request)
 
+	// mengambil nilai dengan key yang tertera dibawah, data yang ditangkap adalah data yang dimasukan sebagai paramter pada saat memanggil route
 	username := request.FormValue("username")
 	balance := request.FormValue("jumlah")
 	var status string
 
+	// pengecekan credential, jika data sesuai maka akan dapat meng-eksekusi fungsi top-up
 	if usernamex != "" {
+		// convert value jumlah dari inputan berupa string dirubah menjadi int
 		jumlah, _ := strconv.Atoi(balance)
+		// pemanggilan fungsi pada repository untuk melakukan eksekusi yang akan dijalankan pada repository, yaitu berhubungan dengan database
 		err := repository.TopupBalanceRepository(username, jumlah)
 		if err != nil {
 			println("Error while exec")
@@ -126,7 +144,41 @@ func topupHandler(response http.ResponseWriter, request *http.Request) {
 		} else {
 			status = "Success"
 		}
-	} else {
+	} else { // statment jika syarat credential diatas tidak terpenuhi
+		status = "Before we go, please login first"
+	}
+
+	fmt.Fprintf(response, status)
+}
+
+// transfer handler
+func transferHandler(response http.ResponseWriter, request *http.Request) {
+	// perintah untuk melakukan pengecekan credential
+	// jika fungsi ini dipanggil dan mengembalikan value yang tidak sama atau kosong maka variable ini akan dijadikan parameter pengecekan
+	// jika data variable "usernamex" kosong atau tidak sesuai maka tidak dapat melakukan action utama yaitu action transfer
+	usernamex := getUserName(request)
+
+	// mengambil nilai dengan key yang tertera dibawah, data yang ditangkap adalah data yang dimasukan sebagai paramter pada saat memanggil route
+	username := request.FormValue("username")
+	usernameTujuan := request.FormValue("tujuan")
+	balance := request.FormValue("jumlah")
+
+	// deklarasi variable untuk menerima nilai balikan / return value dari fungsi transfer pada scope repository
+	var status string
+
+	// pengecekan credential, jika data sesuai maka akan dapat meng-eksekusi fungsi transfer
+	if usernamex != "" {
+		jumlah, _ := strconv.Atoi(balance)
+		// pemanggilan fungsi pada repository untuk melakukan eksekusi yang akan dijalankan pada repository, yaitu berhubungan dengan database
+		err := repository.TransferBalanceRepository(username, usernameTujuan, jumlah)
+		if err != nil {
+			println("Error while exec")
+			println(err.Error())
+			status = "Failed"
+		} else {
+			status = "Success"
+		}
+	} else { // statment jika syarat credential diatas tidak terpenuhi
 		status = "Before we go, please login first"
 	}
 
