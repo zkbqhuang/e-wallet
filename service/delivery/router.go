@@ -14,8 +14,6 @@ var router = mux.NewRouter()
 func Router() {
 	// route untuk home
 	router.HandleFunc("/", homeHandler)
-	// route untuk status setelah berhasil login
-	router.HandleFunc("/internal", pageHandler)
 
 	// route untuk melakukan login / create cookie & sesion
 	router.HandleFunc("/login", loginHandler).Methods("POST")

@@ -22,17 +22,6 @@ const (
 		<button type="submit">Login</button>
 	</form>
 	`
-
-	// tampilan web untuk menampilkan username setelah berhasil login
-	// hal ini dibuat agar lebih mudah jika ingin mengakses melalui web agar lebih mudah
-	internalPage = `
-	<h1>Internal</h1>
-	<hr>
-	<small>User: %s</small>
-	<form method="post" action="/logout">
-		<button type="submit">Logout</button>
-	</form>
-	`
 )
 
 // cookie handling
@@ -89,34 +78,37 @@ func homeHandler(response http.ResponseWriter, request *http.Request) {
 	fmt.Fprintf(response, indexPage)
 }
 
-// deklarasi dan handling untuk success login ("/internal")
-func pageHandler(response http.ResponseWriter, request *http.Request) {
-	userName := getUserName(request)
-	if userName != "" {
-		fmt.Fprintf(response, internalPage, userName)
-	} else {
-		http.Redirect(response, request, "/", 302)
-	}
-}
-
 // deklarasi dan handling login ("/login")
 func loginHandler(response http.ResponseWriter, request *http.Request) {
+	var status string
+
 	username := request.FormValue("username")
 	pass := request.FormValue("password")
-	redirectTarget := "/"
-	if username != "" && pass != "" {
-		// perintah untuk melakukan pengecekan credential
-		// jika credential nya benar maka akan diarahkan ke alamat "/internal"
-		setSession(username, response)
-		redirectTarget = "/internal"
+	userData, err := repository.GetUserData(username)
+	if err != nil {
+		println(err.Error())
 	}
-	http.Redirect(response, request, redirectTarget, 302)
+
+	// alasan saya tidak melakukan enkripsi pada password karena untuk project sekecil ini dan se simple ini tidak diperlukan untuk enkripsi dan karena keterbatas waktu juga
+	// jika nantinya dalam project asli pasti saya akan melakukan enkripsi
+	if userData.Username == username && userData.Password == pass {
+		if username != "" && pass != "" {
+			// perintah untuk melakukan pengecekan credential
+			// jika credential nya benar maka akan diarahkan ke alamat "/internal"
+			setSession(username, response)
+			status = "Berhasil login"
+		}
+	} else {
+		status = "Maaf, kombinasi yang anda masukan salah"
+	}
+	fmt.Fprintf(response, status)
 }
 
 // deklarasi dan handling login ("/logout")
 func logoutHandler(response http.ResponseWriter, request *http.Request) {
 	clearSession(response)
-	http.Redirect(response, request, "/", 302)
+	status := "Berhasil logout"
+	fmt.Fprintf(response, status)
 }
 
 // top-up handler untuk menghandle route "/top-up"
