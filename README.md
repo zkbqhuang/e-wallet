@@ -1,4 +1,4 @@
-# E-wallet (privyID)
+# E-wallet
 Build CRUD system for make mini e-wallet, user can login, logout, top-up, transfer
 
 ## Preparation
